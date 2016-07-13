@@ -25,7 +25,8 @@ long long go(int position, int x, int y) {
     if (x > m) {
         ans += go(position + 1, x, y) * (x - m);
     }
-    return ans % 1000000007;
+    ans %= 1000000007;
+    return ans;
 }
 
 int main() {

@@ -3,42 +3,41 @@
 
 using namespace std;
 
-int a, b, c;
-int D[501][501][501];
+int sum;
+bool check[1501][1501];
 
-int go(int x, int y, int z) {
-    if (x == a && y == b && z == c) {
-        return 1;
+void go(int x, int y) {
+    if(check[x][y]) return;
+    check[x][y] = true;
+    int a[3] = {x,y,sum-x-y};
+    for(int i=0;i<3;i++){
+        for(int j=0;j<3;j++){
+            if(a[i] < a[j]){
+                int b[3] = {x,y,sum-x-y};
+                b[i] += a[i];
+                b[j] -= a[i];
+                go(b[0],b[1]);
+            }
+        }
     }
-    if(x+y+z != a+b+c){
-        return 0;
-    }
 
-    if (x < 0 || y < 0 || z < 0) {
-        return 0;
-    }
-
-
-    int &ans = D[x][y][z];
-    if (ans != -1) return ans;
-    ans = 0;
-
-    if (go(x / 2, y + a, z)) ans = go(x / 2, y + a, z);
-    if (go(x + b, y / 2, z)) ans = go(x + b, y / 2, z);
-    if (go(x / 2, y, z + a)) ans = go(x / 2, y, z + a);
-    if (go(x + c, y, z / 2)) ans = go(x + c, y, z / 2);
-    if (go(x, y / 2, z + b)) ans = go(x, y / 2, z + b);
-    if (go(x, y + c, z / 2)) ans = go(x, y + c, z / 2);
-
-    return ans;
 }
 
 int main() {
-    cin >> a >> b >> c;
+    int x, y, z;
+    cin >> x >> y >> z;
+    sum = x+y+z;
 
-    memset(D, -1, sizeof(D));
-    int mid = (a + b + c)/3;
-    cout << go(mid, mid, mid) << endl;
+    if (sum % 3 != 0) {
+        cout << 0 << '\n';
+        return 0;
+    }
+    go(x, y);
+    if (check[sum / 3][sum / 3]) {
+        cout << 1 << '\n';
+    } else {
+        cout << 0 << '\n';
+    }
 
     return 0;
 }

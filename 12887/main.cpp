@@ -1,45 +1,48 @@
 #include <iostream>
-#include <map>
+#include <queue>
 
 using namespace std;
 
-
+const int MAX = 1000000;
 
 int main() {
-    char arr[51][51];
-
-    int n;
-    cin >> n;
-    for(int i=1; i <= n;i++){
-        cin >> arr[i][1];
-    }
-    for(int i=1;i<=n;i++){
-        cin >> arr[i][2];
-    }
-
-    int start =0;
-    bool flag = true;
-    for(int i=1; i<=n ;i++){
-        if(arr[i][1] == arr[i][2] && arr[i][1] == '.'){
-            start = i;
-            break;
+    int n = 2;
+    int m;
+    cin >> m;
+    vector<string> a(n);
+    int white = 0;
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+        for (int j = 0; j < m; j++) {
+            if (a[i][j] == '.') {
+                white += 1;
+            }
         }
-        if(i==n) flag = false;
+    }
+    vector<int> d[2];
+    for (int i = 0; i < n; i++) {
+        d[i].resize(m, MAX);
     }
 
-    if(flag == false){
-        cout << 0 << endl;
-        return 0;
-    }
-
-    int count = 0;
-    for(int i=start;i<=n;i++){
-        if(arr[i][1]!=arr[i][2]){
-            break;
+    for (int i = 0; i < 2; i++) {
+        if (a[i][m - 1] == '.') {
+            d[i][m - 1] = 1;
         }
-        count ++;
     }
 
-    cout << count << endl;
+    for (int j = m - 2; j >= 0; j--) {
+        for (int i = 0; i < 2; i++) {
+            if (a[i][j] == '#') {
+                continue;
+            }
+            int right = d[i][j + 1] + 1;
+            if(a[1-i][j] != '#'){
+                right = min(right,2+d[1-i][j+1]);
+            }
+            d[i][j] = right;
+        }
+    }
+    cout << white -min(d[0][0],d[1][0]) << '\n';
+
     return 0;
 }
